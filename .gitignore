@@ -11,3 +11,5 @@
 !project.code-workspace
 
 # Please, add your custom content below!
+src/data/DoS_Pharmacy_Organisations.xlsx
+src/data/service-related-data-20231004.xlsx

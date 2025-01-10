@@ -1,0 +1,64 @@
+aws dynamodb list-tables --endpoint-url http://localhost:8000
+
+-- load data
+aws dynamodb delete-table \
+    --table-name healthcareService \
+    --endpoint-url http://localhost:8000
+
+aws dynamodb delete-table \
+    --table-name organisation \
+    --endpoint-url http://localhost:8000
+
+aws dynamodb delete-table \
+    --table-name location \
+    --endpoint-url http://localhost:8000
+
+aws dynamodb delete-table \
+    --table-name organisationAffiliation \
+    --endpoint-url http://localhost:8000
+
+
+aws dynamodb create-table \
+    --table-name healthcareService \
+    --attribute-definitions \
+        AttributeName=id,AttributeType=S \
+    --key-schema \
+        AttributeName=id,KeyType=HASH \
+    --provisioned-throughput \
+        ReadCapacityUnits=5,WriteCapacityUnits=5 \
+    --table-class STANDARD \
+    --endpoint-url http://localhost:8000
+
+aws dynamodb create-table \
+    --table-name organisation \
+    --attribute-definitions \
+        AttributeName=id,AttributeType=S \
+    --key-schema \
+        AttributeName=id,KeyType=HASH \
+    --provisioned-throughput \
+        ReadCapacityUnits=5,WriteCapacityUnits=5 \
+    --table-class STANDARD \
+    --endpoint-url http://localhost:8000
+
+aws dynamodb create-table \
+    --table-name location \
+    --attribute-definitions \
+        AttributeName=id,AttributeType=S \
+    --key-schema \
+        AttributeName=id,KeyType=HASH \
+    --provisioned-throughput \
+        ReadCapacityUnits=5,WriteCapacityUnits=5 \
+    --table-class STANDARD \
+    --endpoint-url http://localhost:8000
+
+
+aws dynamodb create-table \
+    --table-name organisationAffiliation \
+    --attribute-definitions \
+        AttributeName=id,AttributeType=S \
+    --key-schema \
+        AttributeName=id,KeyType=HASH \
+    --provisioned-throughput \
+        ReadCapacityUnits=5,WriteCapacityUnits=5 \
+    --table-class STANDARD \
+    --endpoint-url http://localhost:8000
