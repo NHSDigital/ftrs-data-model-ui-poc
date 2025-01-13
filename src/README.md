@@ -1,3 +1,12 @@
+## Configuration
+
+Installation and configuration of the toolchain dependencies
+
+```shell
+poetry lock
+poetry install
+```
+
 ## Setting up data for running locally
 
 Create a folder called "data" inside this "src" folder
