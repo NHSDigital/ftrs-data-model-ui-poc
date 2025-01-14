@@ -12,6 +12,8 @@ onboarding
 Podman
 Python
 sed
+SharePoint
+src
 Syft
 Terraform
 toolchain
