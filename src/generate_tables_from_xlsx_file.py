@@ -6,10 +6,10 @@ from decimal import Decimal
 
 dynamodb = boto3.resource("dynamodb", endpoint_url='http://localhost:8000')
 
-org_xl = pd.ExcelFile("./data/DoS_Pharmacy_Organisations.xlsx")
+org_xl = pd.ExcelFile("src/data/DoS_Pharmacy_Organisations.xlsx")
 organisations = org_xl.parse("Organisations")
 
-service_xl = pd.ExcelFile("./data/service-related-data-20231004.xlsx")
+service_xl = pd.ExcelFile("src/data/service-related-data-20231004.xlsx")
 services = service_xl.parse("service-data")
 
 service_age_ranges = service_xl.parse("service-age-range")
@@ -36,8 +36,8 @@ for index, organisation in organisations.iterrows():
                 "active": True,
                 "name": organisation["Name"],
                 "telecom": None,
-                "type": 
-                    organisation["Non Primary Role Name(s)"] 
+                "type":
+                    organisation["Non Primary Role Name(s)"]
                     if organisation["Non Primary Role Name(s)"] == "INTEGRATED CARE BOARD"
                     else organisation["Primary Role Name"],
                 "createdBy": "test_system_ignore",
@@ -68,7 +68,7 @@ for index, organisation in organisations.iterrows():
                 "modifiedDateTime": "2024-12-10T11:09:00"
             }
         )
-        
+
 
 # create locations
 for index, organisation in organisations.iterrows():
@@ -92,7 +92,7 @@ for index, organisation in organisations.iterrows():
             "name": address_name if address_name else organisation["Name"],
             "address": {
                 "city": organisation["Town"],
-                "line": [organisation["Address Line 1"]], 
+                "line": [organisation["Address Line 1"]],
                 "district": None,
                 "postalCode": organisation["Postcode"]
             },
@@ -121,7 +121,7 @@ for index, service in services.iterrows():
                 "name": service["publicname"],
                 "address": {
                         "city": service["town"],
-                        "line": [{"S": service["address"]}], 
+                        "line": [{"S": service["address"]}],
                         "district": None,
                         "postalCode": service["postcode"]
                 },
