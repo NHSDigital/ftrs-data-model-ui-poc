@@ -69,7 +69,6 @@ for index, organisation in organisations.iterrows():
             }
         )
 
-
 # create locations
 for index, organisation in organisations.iterrows():
     if organisation["Postcode"] not in known_postcodes:
