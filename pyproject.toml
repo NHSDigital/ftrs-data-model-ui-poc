@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "ftrs-data-model-ui-poc"
+version = "0.1.0"
+description = ""
+authors = ["NHS England"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.13,<4.0.0"
+aws-lambda-powertools = {extras = ["aws-sdk"], version = "2.26.0"}
+MarkupSafe = "2.0.1"
+boto3 = "*"
+pandas = "*"
+numpy = "*"
+openpyxl = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
