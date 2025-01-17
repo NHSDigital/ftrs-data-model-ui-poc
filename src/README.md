@@ -25,8 +25,6 @@ Copy the following files from SharePoint into the data folder:
 
 [Organisation data](https://nhs.sharepoint.com/:x:/r/sites/msteams_73d944/Shared%20Documents/Dos%20Data/DOS%20Dataset/DoS_Pharmacy_Organisations.xlsx?d=w926886aae4b04de2a68629c2bb2bc3c7&csf=1&web=1&e=ZemEoc)
 
-Run the relevant scripts in "create_tables" for setting up the tables.
-
 ## How to run locally
 
 Inside this src/ folder have two terminals open and run the following:
@@ -34,4 +32,7 @@ Inside this src/ folder have two terminals open and run the following:
 1. ``` docker-compose up ```
 2. ``` fastapi dev front_end.py --port 8100 ```
 
-When docker has spun up you can generate the data by running the Python script "generate_tables_from_xlsx_file".
+When docker has spun up you can:
+
+- Run the relevant scripts in "create_tables" for setting up the tables.
+- Generate the data by running the Python script "generate_tables_from_xlsx_file".
