@@ -1,0 +1,68 @@
+name: Pipeline Deploy Account Level Infrastructure
+on:
+  push:
+    branches:
+      - 'main'
+      - develop
+
+jobs:
+  metadata:
+    name: "Get Metadata"
+    uses: NHSDigital/uec-dos-management/.github/workflows/metadata.yaml@latest
+
+  deploy-account-infrastructure-plan:
+    name: "Plan account level infrastructure deployment"
+    needs:
+      [
+        metadata,
+      ]
+    uses: NHSDigital/uec-dos-management/.github/workflows/deploy-infrastructure.yaml@latest
+    with:
+      environment: ${{ needs.metadata.outputs.environment }}
+      domain: "ftrs-data-model-ui-poc"
+      workspace: "default"
+      stacks: "['terraform_management','account-wide']"
+      action: plan
+    secrets: inherit
+
+  manual-approval:
+    name: "Manual approval for deployment"
+    needs:
+      [
+        metadata,
+        deploy-account-infrastructure-plan,
+      ]
+    runs-on: ubuntu-latest
+    environment: "${{ needs.metadata.outputs.environment }}-protected"
+    steps:
+      - name: Approval required
+        run: echo "Deployment paused for manual approval. Please approve in the Actions tab."
+
+  deploy-account-infrastructure-apply:
+    name: "Deploy account level infrastructure"
+    needs:
+      [
+        metadata,
+        manual-approval,
+      ]
+    uses: NHSDigital/uec-dos-management/.github/workflows/deploy-infrastructure.yaml@latest
+    with:
+      environment: ${{ needs.metadata.outputs.environment }}
+      domain: "ftrs-data-model-ui-poc"
+      workspace: "default"
+      stacks: "['terraform_management','account-wide']"
+      action: apply
+    secrets: inherit
+
+  slack-notifications:
+    needs: [
+      metadata,
+      deploy-account-infrastructure-plan,
+      manual-approval,
+      deploy-account-infrastructure-apply,
+    ]
+    if: always()
+    uses: NHSDigital/uec-dos-management/.github/workflows/slack-notifications.yaml@latest
+    with:
+      env: dev
+    secrets: inherit
