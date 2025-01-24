@@ -2,3 +2,4 @@ aws-lambda-powertools[aws-sdk]==2.26.0
 MarkupSafe==2.0.1
 boto3
 fastapi[standard]
+mangum
