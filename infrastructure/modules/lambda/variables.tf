@@ -66,7 +66,3 @@ variable "lambda_layer_name" {
 variable "lambda_s3_bucket_arn" {
   description = "The ARN of the S3 bucket where the Lambda function code is stored"
 }
-
-variable "lambda_layer_s3_bucket" {
-  description = "The name of the S3 bucket where the Lambda layer code is stored"
-}
