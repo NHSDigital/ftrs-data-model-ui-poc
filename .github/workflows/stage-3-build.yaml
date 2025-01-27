@@ -31,6 +31,10 @@ on:
         description: "Version of the software, set by the CI/CD pipeline workflow"
         required: true
         type: string
+      repo_name:
+        description: "The name of the Git repo"
+        required: true
+        type: string
 
 jobs:
   build-lambda-zip:
@@ -61,3 +65,4 @@ jobs:
           COMMIT_HASH: ${{ inputs.commit_hash }}
           ENVIRNOMENT: ${{ inputs.environment }}
           WORKSPACE: ${{ inputs.workspace }}
+          REPO_NAME: ${{ inputs.repo_name }}

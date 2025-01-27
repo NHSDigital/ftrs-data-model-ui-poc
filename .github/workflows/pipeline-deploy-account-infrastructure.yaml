@@ -2,7 +2,7 @@ name: Pipeline Deploy Account Level Infrastructure
 on:
   push:
     branches:
-      - 'main'
+      - main
       - develop
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
     uses: NHSDigital/uec-dos-management/.github/workflows/deploy-infrastructure.yaml@latest
     with:
       environment: ${{ needs.metadata.outputs.environment }}
-      domain: "ftrs-data-model-ui-poc"
+      domain: ${{ needs.metadata.outputs.reponame }}
       workspace: "default"
       stacks: "['terraform_management','account-wide']"
       action: plan
@@ -48,7 +48,7 @@ jobs:
     uses: NHSDigital/uec-dos-management/.github/workflows/deploy-infrastructure.yaml@latest
     with:
       environment: ${{ needs.metadata.outputs.environment }}
-      domain: "ftrs-data-model-ui-poc"
+      domain: ${{ needs.metadata.outputs.reponame }}
       workspace: "default"
       stacks: "['terraform_management','account-wide']"
       action: apply

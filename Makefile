@@ -4,9 +4,9 @@
 include scripts/init.mk
 
 # ==============================================================================
-LAMBDA_NAME := data-model-ui-lambda
-LAYER_NAME := data-model-ui-layer
-S3_BUCKET := ftrs-data-model-ui-poc-$(ENVIRNOMENT)-artefacts-bucket
+LAMBDA_NAME := ${REPO_NAME}-lambda
+LAYER_NAME := ${REPO_NAME}-layer
+S3_BUCKET := ${REPO_NAME}-$(ENVIRNOMENT)-artefacts-bucket
 BUILD_DIR := build
 SRC_DIR := src
 REQUIREMENTS := $(SRC_DIR)/requirements.txt

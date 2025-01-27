@@ -8,9 +8,9 @@ module "data_model_ui_lambda" {
   security_group_ids   = [aws_security_group.data_model_ui_sg.id]
   lambda_s3_bucket     = data.aws_s3_bucket.artefact_bucket.bucket
   lambda_s3_bucket_arn = data.aws_s3_bucket.artefact_bucket.arn
-  lambda_s3_key        = "${var.data_model_ui_name}-lambda/${var.data_model_ui_name}-lambda-${var.application_tag}.zip"
+  lambda_s3_key        = "${local.prefix}-lambda/${local.prefix}-lambda-${var.application_tag}.zip"
   lambda_layer_name    = "${local.prefix}-layer${local.workspace_suffix}"
-  lambda_layer_s3_key  = "${var.data_model_ui_name}-layer/${var.data_model_ui_name}-layer-${var.application_tag}.zip"
+  lambda_layer_s3_key  = "${local.prefix}-layer/${local.prefix}-layer-${var.application_tag}.zip"
 
   lambda_handler = var.data_model_ui_lambda_handler
   lambda_runtime = var.data_model_ui_lambda_runtime

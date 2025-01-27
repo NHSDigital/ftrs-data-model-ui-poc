@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - develop
-      - 'task/*'
+      - task/*
   workflow_dispatch:
     inputs:
       tag:
@@ -92,6 +92,7 @@ jobs:
       version: ${{ needs.metadata.outputs.version }}
       environment: ${{ needs.metadata.outputs.environment }}
       workspace: ${{ needs.metadata.outputs.environment }}
+      repo_name: ${{ needs.metadata.outputs.reponame }}
     secrets: inherit
 
   deploy-infrastructure-plan:
@@ -105,7 +106,7 @@ jobs:
     uses: NHSDigital/uec-dos-management/.github/workflows/deploy-infrastructure.yaml@latest
     with:
       environment: ${{ needs.metadata.outputs.environment }}
-      domain: "ftrs-data-model-ui-poc"
+      domain: ${{ needs.metadata.outputs.reponame }}
       workspace: ${{ needs.metadata.outputs.environment }}
       stacks: "['application']"
       application_tag: ${{ inputs.application_tag || needs.metadata.outputs.commit_hash }}
@@ -134,7 +135,7 @@ jobs:
     uses: NHSDigital/uec-dos-management/.github/workflows/deploy-infrastructure.yaml@latest
     with:
       environment: ${{ needs.metadata.outputs.environment }}
-      domain: "ftrs-data-model-ui-poc"
+      domain: ${{ needs.metadata.outputs.reponame }}
       workspace: ${{ needs.metadata.outputs.environment }}
       stacks: "['application']"
       application_tag: ${{ inputs.application_tag || needs.metadata.outputs.commit_hash }}
