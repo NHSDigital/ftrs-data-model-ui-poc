@@ -50,6 +50,8 @@ jobs:
 
       - name: "Build Python Packages"
         run: make build
+        env:
+          REPO_NAME: ${{ inputs.repo_name }}
 
       - name: Configure AWS Credentials
         uses: NHSDigital/uec-dos-management/.github/actions/configure-credentials@latest
