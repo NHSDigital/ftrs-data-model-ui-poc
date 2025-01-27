@@ -1,6 +1,6 @@
 resource "aws_security_group" "data_model_ui_sg" {
   vpc_id      = data.aws_vpc.vpc.id
-  name        = "${local.prefix}-${var.data_model_ui_name}${local.workspace_suffix}"
+  name        = "${local.prefix}-lambda{local.workspace_suffix}"
   description = "Security group for application lambda"
 
   ingress {
