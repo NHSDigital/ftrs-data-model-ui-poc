@@ -30,7 +30,7 @@ variable "retry_attempts" {
 }
 
 variable "log_retention" {
-  description = "Length of timeto keep the logs in cloudwatch"
+  description = "Length of time to keep the logs in cloudwatch"
   default     = "0"
 }
 

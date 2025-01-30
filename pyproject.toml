@@ -15,6 +15,7 @@ fastapi = {extras = ["standard"], version = "^0.115.6"}
 pandas = "*"
 numpy = "*"
 openpyxl = "*"
+mangum = "*"
 
 [build-system]
 requires = ["poetry-core"]

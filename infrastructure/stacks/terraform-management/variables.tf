@@ -7,6 +7,6 @@ variable "terraform_state_bucket_name" {
 }
 
 variable "s3_versioning" {
-  description = "Whether versioning is enabled for the S3 bucket that holds the Terraform state"
+  description = "Whether versioning is enabled for the S3 bucket that holds the terraform state"
   type        = bool
 }
