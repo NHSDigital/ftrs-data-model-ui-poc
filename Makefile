@@ -4,8 +4,8 @@
 include scripts/init.mk
 
 # ==============================================================================
-LAMBDA_NAME := ${REPO_NAME}-lambda
-LAYER_NAME := ${REPO_NAME}-layer
+LAMBDA_NAME := ${REPO_NAME}-$(ENVIRNOMENT)-lambda
+LAYER_NAME := ${REPO_NAME}-$(ENVIRNOMENT)-layer
 S3_BUCKET := ${REPO_NAME}-$(ENVIRNOMENT)-artefacts-bucket
 BUILD_DIR := build
 SRC_DIR := src
