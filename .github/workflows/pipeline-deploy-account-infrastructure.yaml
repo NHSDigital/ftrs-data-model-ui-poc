@@ -21,7 +21,7 @@ jobs:
       environment: ${{ needs.metadata.outputs.environment }}
       domain: ${{ needs.metadata.outputs.reponame }}
       workspace: "default"
-      stacks: "['terraform_management','account-wide']"
+      stacks: "['terraform-management','account-wide']"
       action: plan
     secrets: inherit
 
@@ -50,7 +50,7 @@ jobs:
       environment: ${{ needs.metadata.outputs.environment }}
       domain: ${{ needs.metadata.outputs.reponame }}
       workspace: "default"
-      stacks: "['terraform_management','account-wide']"
+      stacks: "['terraform-management','account-wide']"
       action: apply
     secrets: inherit
 
