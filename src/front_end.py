@@ -3,6 +3,7 @@
 import ast
 import boto3
 
+from mangum import Mangum
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -36,9 +37,9 @@ async def read_item(request: Request, id: str):
 
 
     return templates.TemplateResponse(
-        request=request, name="service.html", 
+        request=request, name="service.html",
         context={
-            "service": service, 
+            "service": service,
             "organisation": organisation.get('Item', None),
             "location": location.get('Item', None)
         }
@@ -83,7 +84,7 @@ async def read_item(request: Request, id: str):
     )['Items']
 
     return templates.TemplateResponse(
-        request=request, name="location.html", 
+        request=request, name="location.html",
         context={
             "location": location,
             "organisation": organisation.get('Item', None),
@@ -174,7 +175,7 @@ async def read_item(request: Request, id: str):
     org_affiliation_children = [get_org(org_aff['participatingOrganisation']['S']) | {'code': org_aff['code']} for org_aff in org_affiliation_children_scan['Items']]
 
     return templates.TemplateResponse(
-        request=request, name="organisation.html", 
+        request=request, name="organisation.html",
         context={
             "organisation": organisation,
             "services": services,
@@ -194,8 +195,8 @@ async def read_item(request: Request):
     )
 
 
-
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
+lambda_handler = Mangum(app)

@@ -1,0 +1,162 @@
+name: Application Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - task/*
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Specify the tag to be used for deployment"
+        required: true
+        type: string
+      application_tag:
+        description: "Specify the application tag to be used for deployment"
+        required: true
+        type: string
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+
+jobs:
+  metadata:
+    name: "Get CI/CD metadata"
+    uses: NHSDigital/uec-dos-management/.github/workflows/metadata.yaml@latest
+
+  generate-tag-name:
+    if: ${{ needs.metadata.outputs.environment == 'dev' && github.ref_name == 'develop' }}
+    name: "Generate Git tag"
+    needs: metadata
+    uses: NHSDigital/uec-dos-management/.github/workflows/generate-tag-name.yaml@latest
+    with:
+      workspace: ${{ needs.metadata.outputs.workspace }}
+      use_commit_hash: "yes"
+      commit_hash: ${{ needs.metadata.outputs.commit_hash }}
+
+  tag-repository:
+    if: ${{ needs.metadata.outputs.environment == 'dev' && github.ref_name == 'develop' }}
+    name: "Push Git tag"
+    needs: generate-tag-name
+    uses: NHSDigital/uec-dos-management/.github/workflows/tag-repository.yaml@latest
+    with:
+      tag_to_push: ${{ needs.generate-tag-name.outputs.tag_name }}
+      tag_overwrite: "yes"
+
+  commit-stage:
+    name: "Commit stage"
+    needs: metadata
+    uses: ./.github/workflows/stage-1-commit.yaml
+    with:
+      build_datetime: ${{ needs.metadata.outputs.build_datetime }}
+      build_timestamp: ${{ needs.metadata.outputs.build_timestamp }}
+      build_epoch: ${{ needs.metadata.outputs.build_epoch }}
+      nodejs_version: ${{ needs.metadata.outputs.nodejs_version }}
+      python_version: ${{ needs.metadata.outputs.python_version }}
+      terraform_version: ${{ needs.metadata.outputs.terraform_version }}
+      version: ${{ needs.metadata.outputs.version }}
+    secrets: inherit
+
+  test-stage:
+    name: "Test stage"
+    needs:
+      - metadata
+      - commit-stage
+    uses: ./.github/workflows/stage-2-test.yaml
+    with:
+      build_datetime: ${{ needs.metadata.outputs.build_datetime }}
+      build_timestamp: ${{ needs.metadata.outputs.build_timestamp }}
+      build_epoch: ${{ needs.metadata.outputs.build_epoch }}
+      nodejs_version: ${{ needs.metadata.outputs.nodejs_version }}
+      python_version: ${{ needs.metadata.outputs.python_version }}
+      terraform_version: ${{ needs.metadata.outputs.terraform_version }}
+      version: ${{ needs.metadata.outputs.version }}
+    secrets: inherit
+
+  build-stage:
+    name: "Build stage"
+    needs:
+      - metadata
+      - test-stage
+    uses: ./.github/workflows/stage-3-build.yaml
+    with:
+      build_datetime: ${{ needs.metadata.outputs.build_datetime }}
+      build_timestamp: ${{ needs.metadata.outputs.build_timestamp }}
+      build_epoch: ${{ needs.metadata.outputs.build_epoch }}
+      commit_hash: ${{ needs.metadata.outputs.commit_hash }}
+      version: ${{ needs.metadata.outputs.version }}
+      environment: ${{ needs.metadata.outputs.environment }}
+      workspace: ${{ needs.metadata.outputs.environment }}
+      repo_name: ${{ needs.metadata.outputs.reponame }}
+    secrets: inherit
+
+  deploy-infrastructure-plan:
+    name: "Plan application infrastructure deployment"
+    concurrency:
+      group: "${{ needs.metadata.outputs.environment }}-protected"
+      cancel-in-progress: false
+    needs:
+      - metadata
+      - build-stage
+    uses: NHSDigital/uec-dos-management/.github/workflows/deploy-infrastructure.yaml@latest
+    with:
+      environment: ${{ needs.metadata.outputs.environment }}
+      domain: ${{ needs.metadata.outputs.reponame }}
+      workspace: ${{ needs.metadata.outputs.environment }}
+      stacks: "['application']"
+      application_tag: ${{ inputs.application_tag || needs.metadata.outputs.commit_hash }}
+      action: plan
+    secrets: inherit
+
+  manual-approval:
+    name: "Manual approval for deployment"
+    needs:
+      - metadata
+      - deploy-infrastructure-plan
+    runs-on: ubuntu-latest
+    environment: "${{ needs.metadata.outputs.environment }}-protected"
+    steps:
+      - name: Approval required
+        run: echo "Deployment paused for manual approval. Please approve in the Actions tab."
+
+  deploy-infrastructure-apply:
+    name: "Deploy application infrastructure"
+    concurrency:
+      group: "${{ needs.metadata.outputs.environment }}-protected"
+      cancel-in-progress: false
+    needs:
+      - metadata
+      - manual-approval
+    uses: NHSDigital/uec-dos-management/.github/workflows/deploy-infrastructure.yaml@latest
+    with:
+      environment: ${{ needs.metadata.outputs.environment }}
+      domain: ${{ needs.metadata.outputs.reponame }}
+      workspace: ${{ needs.metadata.outputs.environment }}
+      stacks: "['application']"
+      application_tag: ${{ inputs.application_tag || needs.metadata.outputs.commit_hash }}
+      action: apply
+      workflow_timeout: 30
+    secrets: inherit
+
+  slack-notifications:
+    name: "Send notification to Slack"
+    needs:
+      - metadata
+      - generate-tag-name
+      - tag-repository
+      - commit-stage
+      - test-stage
+      - build-stage
+      - deploy-infrastructure-plan
+      - manual-approval
+      - deploy-infrastructure-apply
+    if: always()
+    uses: NHSDigital/uec-dos-management/.github/workflows/slack-notifications.yaml@latest
+    with:
+      env: ${{ needs.metadata.outputs.environment }}
+    secrets: inherit

@@ -1,0 +1,11 @@
+project_owner    = "nhs-uec"
+tag_version      = "1"
+service          = "uec-ftrs"
+cost_centre      = "P0675"
+data_type        = "PCD"
+project_type     = "PoC"
+public_facing    = "no"
+service_category = "bronze"
+on_off_pattern   = "alwaysOn"
+
+data_model_ui_artefacts_bucket_name = "artefacts-bucket"
